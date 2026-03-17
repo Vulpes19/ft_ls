@@ -1,7 +1,7 @@
 NAME = ft_ls
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 SRC = src/main.c
 OBJ = $(SRC:.c=.o)
