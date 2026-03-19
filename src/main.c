@@ -33,7 +33,7 @@ int main(int ac, char **av)
         //     parse_arg(&target_dir, av[i]);
         i++;
     }
-    store_entries();
+    store_entries(&ch);
 
     // printf("%d %d %d %d %d\n", (int)ch.a_flag, (int)ch.l_flag, (int)ch.R_flag, (int)ch.r_flag, (int)ch.t_flag);
     return (0);

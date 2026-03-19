@@ -3,6 +3,7 @@
 #include <pwd.h>
 #include <errno.h>
 #include <string.h>
+#include "printer.h"
 
 
 void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
@@ -18,7 +19,7 @@ void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     }
 }
 
-void    store_entries(void) {
+void    store_entries(checker *ch) {
     int size = 0;
     int capacity = 5;
     DIR *dir = opendir(".");
@@ -26,7 +27,7 @@ void    store_entries(void) {
     t_entry_data *data;
     struct stat     statbuf;
 
-    data = (t_entry_data *)malloc(sizeof(t_entry_data *));
+    data = (t_entry_data *)malloc(sizeof(t_entry_data));
     data->entries = (t_entry **)ft_calloc(capacity, sizeof(t_entry *));
     if (!data->entries) {
         perror(ft_strjoin("Failed to allocate memory for t_entry ** in: ", strerror(errno)));
@@ -36,10 +37,11 @@ void    store_entries(void) {
     if (dir) {
         while ((entry = readdir(dir)) != NULL) {
             if (stat(entry->d_name, &statbuf) == -1) {
-                printf("stat failed\n");
+                free_d_ptr(data->entries, size);
+                free(data);
+                handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry ** : ");
                 continue;
             }
-            printf("%d %d\n", size, capacity);
             if (size == capacity) {
                 capacity *= 2;
                 t_entry **new_entries = (t_entry **)ft_calloc(capacity, sizeof(t_entry *));
@@ -70,20 +72,10 @@ void    store_entries(void) {
         data->size = size;
     }
     
+    print_output(ch, data);
 
-    int j = 0;
-    while (j < data->size) {
-        printf("inside: %s\n", data->entries[j]->name);
-        printf("size: %d\n", data->entries[j]->size);
-        // printf("%hu\n", entries[j]->stat.st_mode);
-        // printf("%d\n", entries[j]->stat.st_nlink);
-        // struct passwd  *pwd;
-        // if ((pwd = getpwuid(entries[j]->stat.st_uid)) != NULL)
-        //     ft_printf(" %s\n", pwd->pw_name);
-        // else
-        //     printf(" %-8d\n", entries[j]->stat.st_uid);
-        j++;
-    }
+    free_d_ptr(data->entries, size);
+    free(data);
 }
 
 void parse_flags(checker *ch, char *argument) {
