@@ -19,15 +19,13 @@ void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     }
 }
 
-void    store_entries(checker *ch) {
-    int size = 0;
-    int capacity = 5;
-    DIR *dir = opendir(".");
+size_t    store_entries(const char *directory, t_entry_data *data) {
+    size_t size = 0;
+    size_t capacity = 5;
+    DIR *dir = opendir(directory);
     struct dirent *entry;
-    t_entry_data *data;
     struct stat     statbuf;
 
-    data = (t_entry_data *)malloc(sizeof(t_entry_data));
     data->entries = (t_entry **)ft_calloc(capacity, sizeof(t_entry *));
     if (!data->entries) {
         perror(ft_strjoin("Failed to allocate memory for t_entry ** in: ", strerror(errno)));
@@ -36,10 +34,13 @@ void    store_entries(checker *ch) {
 
     if (dir) {
         while ((entry = readdir(dir)) != NULL) {
-            if (stat(entry->d_name, &statbuf) == -1) {
+            char *full_path = ft_strjoin(directory, "/");
+            full_path = ft_strjoin(full_path, entry->d_name);
+            // printf("name: %s\n", full_path);
+            if (stat(full_path, &statbuf) == -1) {
                 free_d_ptr(data->entries, size);
                 free(data);
-                handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry ** : ");
+                handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to get stat");
                 continue;
             }
             if (size == capacity) {
@@ -71,14 +72,14 @@ void    store_entries(checker *ch) {
         closedir(dir);
         data->size = size;
     }
-    
-    print_output(ch, data);
 
-    free_d_ptr(data->entries, size);
-    free(data);
+
+    // free_d_ptr(data->entries, size);
+    // free(data);
+    return data->size;
 }
 
-void parse_flags(checker *ch, char *argument) {
+void parse_flags(t_flags *flags, char *argument) {
     int i = 1;
     int len = ft_strlen(argument);
 
@@ -88,19 +89,19 @@ void parse_flags(checker *ch, char *argument) {
         switch (flag)
         {
             case 'l':
-                ch->l_flag = true;
+                flags->l_flag = true;
                 break;
             case 'a':
-                ch->a_flag = true;
+                flags->a_flag = true;
                 break;
             case 'R':
-                ch->R_flag = true;
+                flags->R_flag = true;
                 break;
             case 'r':
-                ch->r_flag = true;
+                flags->r_flag = true;
                 break;
             case 't':
-                ch->t_flag = true;
+                flags->t_flag = true;
                 break;
             default:
                 break;

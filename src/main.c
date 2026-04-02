@@ -7,34 +7,54 @@
 #include "structs.h"
 #include <pwd.h>
 #include "parser.h"
+#include "sorter.h"
+#include "printer.h"
 
-// void    parse_arg(char **target_dir, char *argument) {
-//     if (opendir(argument) != NULL)
+void    ls_dir(t_flags *flags, char *path) {
 
-// }
+    t_entry_data *data = NULL;
+    size_t size = 0;
+
+    data = (t_entry_data *)malloc(sizeof(t_entry_data));
+    if (!data) {
+        handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry_data * : ");
+    }
+    size = store_entries(path, data);
+    sort_entries(flags, data);
+    print_output(flags, path, data);
+
+    free_d_ptr(data->entries, size);
+    free(data);
+
+    // if (flags->R_flag)
+    //     ls_subdir(path);
+}
 
 int main(int ac, char **av)
 {
-    int i = 0;
-
-    checker ch = {
+    int i = 1;
+    t_flags flags = {
         false,
         false,
         false,
         false,
-        false
+        false,
+        0
     };
 
-    while (i < ac) {
+    while (i < ac && av[i][0] == '-') {
         ft_printf("%s\n", av[i]);
-        if (av[i][0] == '-')
-            parse_flags(&ch, av[i]);
-        // else
-        //     parse_arg(&target_dir, av[i]);
+        parse_flags(&flags, av[i]);
         i++;
     }
-    store_entries(&ch);
-
-    // printf("%d %d %d %d %d\n", (int)ch.a_flag, (int)ch.l_flag, (int)ch.R_flag, (int)ch.r_flag, (int)ch.t_flag);
+    if (i == ac)
+        ls_dir(&flags, ".");
+    else
+        flags.dir_nbr = ac - i;
+    while (i < ac) {
+        ls_dir(&flags, av[i]);
+        i++;
+    }
+    
     return (0);
 }

@@ -15,7 +15,8 @@ typedef struct {
     bool a_flag;
     bool r_flag;
     bool t_flag;
-} checker;
+    int dir_nbr;
+} t_flags;
 
 typedef struct {
     char *name;
@@ -24,5 +25,5 @@ typedef struct {
 
 typedef struct {
     t_entry **entries;
-    int size;
+    size_t size;
 } t_entry_data;
