@@ -1,7 +1,14 @@
 #include "ls.h"
 
 void    ls_subdir(char *path) {
+    DIR *dir = opendir(path);
+    struct dirent *entry;
 
+    // if (dir) {
+    //     while ((entry = readdir(dir)) != NULL ) {
+            
+    //     }
+    // }
 }
 
 void    ls_dir(t_flags *flags, char *path) {

@@ -1,9 +1,9 @@
 NAME = ft_ls
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS = -fsanitize=address -g #-Wall -Wextra -Werror
 
-SRC = src/main.c src/parser.c src/utils.c src/printer.c src/sorter.c
+SRC = src/main.c src/parser.c src/utils.c src/printer.c src/sorter.c src/ls.c
 OBJ = $(SRC:.c=.o)
 
 LIBFT_DIR = Libft

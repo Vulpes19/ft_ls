@@ -61,6 +61,7 @@ size_t    store_entries(const char *directory, t_entry_data *data) {
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry *: ");
             }
             data->entries[size]->name = ft_strdup(entry->d_name);
+            data->entries[size]->type = entry->d_type;
             if (!data->entries[size]->name) {
                 free_d_ptr(data->entries, size);
                 free(data);

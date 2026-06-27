@@ -21,6 +21,8 @@ typedef struct {
 typedef struct {
     char *name;
     struct stat     stat;
+    unsigned int type;
+
 } t_entry;
 
 typedef struct {
