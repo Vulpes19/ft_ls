@@ -38,7 +38,7 @@ int	check(char c, va_list list)
 	else if (c == 's')
 		len += ft_putstr(va_arg(list, char *));
 	else if (c == 'd' || c == 'i') {
-		printf("inside printf: %d\n", va_arg(list, int));
+		// printf("inside printf: %d\n", va_arg(list, int));
 		len += ft_putnbr(va_arg(list, int)); }
 	else if (c == 'u')
 		len += ft_putnbr_unsigned(va_arg(list, unsigned int));

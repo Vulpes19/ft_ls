@@ -5,6 +5,18 @@
 #include <string.h>
 #include "printer.h"
 
+#define USR_READ 0400
+#define USR_WRITE 0200
+#define USR_EXECUTE 0100
+
+#define GRP_READ 0040
+#define GRP_WRITE 0040
+#define GRP_EXECUTE 0010
+
+#define OTH_READ 0004
+#define OTH_WRITE 0002
+#define OTH_EXECUTE 0001
+
 
 void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     int i = 0;
