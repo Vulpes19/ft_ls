@@ -57,27 +57,37 @@ void    set_permissions(unsigned int type, mode_t st_mode, char *permissions) {
     permissions[10] = '\0';
 }
 
-void    get_date(time_t mtime, char *month, char *day, char *time) {
+void    get_date(time_t mtime, char *month, char *day, char *time, time_t current_time) {
     char *full_date = ctime(&mtime);
-    // printf("%s\n", full_date);
+    const long six_months = 15552000;
+    time_t file_age = current_time - mtime;
     size_t date_len = 25;
+
     ft_strlcpy(month, &full_date[4], 4);
     ft_strlcpy(day, &full_date[8], 3);
-    ft_strlcpy(time, &full_date[11], 6);
+    if (file_age > six_months)
+        ft_strlcpy(time, &full_date[19], 6);
+    else
+        ft_strlcpy(time, &full_date[11], 6);
 
 }
 
-void    print_l_flag(t_entry *entry) {
+void    print_l_flag(t_entry *entry, time_t current_time) {
     char permissions[11];
     char month[4];
     char day[3];
     char time[6];
+    char *filename = entry->name;
     set_permissions(entry->type, entry->stat.st_mode, permissions);
     
     struct passwd *pwuid = getpwuid(entry->stat.st_uid);
     struct group *gr = getgrgid(entry->stat.st_gid);
-    get_date(entry->stat.st_mtime, month, day, time);
-    printf("%s %d %s %s %d %s %s %s %s\n", permissions, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, entry->stat.st_size, month, day, time , entry->name); 
+    get_date(entry->stat.st_mtime, month, day, time, current_time);
+    if (lstat(entry->name, &entry->stat) == 0) {
+        if (S_ISLNK(&entry->stat)) {
+            printf("%s is a symbolic link.\n", filename);
+    }
+    printf("%s %d %s %s %d %s %s %s %s\n", permissions, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, entry->stat.st_size, month, day, time , filename); 
 
 }
 
@@ -85,11 +95,12 @@ void    print_output(t_flags *flags, char *directory, t_entry_data *data) {
     if (flags->dir_nbr > 1) {
         ft_printf("%s:\n", directory);
     }
+    time_t current_time = time(NULL);
     for (size_t i = 0; i < data->size && data->entries[i]; i++) {
         if (!flags->a_flag && data->entries[i]->name[0] == '.')
             continue;
         if (flags->l_flag)
-            print_l_flag(data->entries[i]);
+            print_l_flag(data->entries[i], current_time);
         else
             ft_printf("%s  ", data->entries[i]->name);
     }
