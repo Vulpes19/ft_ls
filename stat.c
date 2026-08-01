@@ -42,6 +42,7 @@ int main(void) {
         /* Print out type, permissions, and number of links. */
         if (statbuf.st_mode)
             printf("%hu", statbuf.st_mode);
+        printf(" number of links ");
         printf("%4d", statbuf.st_nlink);
 
 

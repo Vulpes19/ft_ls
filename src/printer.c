@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <string.h>
 
+
 void    set_permissions(unsigned int type, mode_t st_mode, char *permissions) {
     switch (type)
     {
@@ -83,12 +84,22 @@ void    print_l_flag(t_entry *entry, time_t current_time) {
     struct passwd *pwuid = getpwuid(entry->stat.st_uid);
     struct group *gr = getgrgid(entry->stat.st_gid);
     get_date(entry->stat.st_mtime, month, day, time, current_time);
-    if (lstat(entry->name, &entry->stat) == 0) {
-        if (S_ISLNK(&entry->stat)) {
-            printf("%s is a symbolic link.\n", filename);
+
+    if (S_ISLNK(entry->stat.st_mode)) {
+        char buf[PATH_MAX];
+
+        buf[0] = ' ';
+        ssize_t len = readlink(entry->full_path, buf + 1, sizeof(buf) - 1);
+        if (len == -1) {
+            handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to read symlink target file");
+            exit(EXIT_FAILURE);
+        }
+        buf[len + 1] = '\0';
+        char *temp = ft_strjoin(entry->name, " ->");
+        filename = ft_strjoin(temp, buf);
+        free(temp);
     }
     printf("%s %d %s %s %d %s %s %s %s\n", permissions, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, entry->stat.st_size, month, day, time , filename); 
-
 }
 
 void    print_output(t_flags *flags, char *directory, t_entry_data *data) {

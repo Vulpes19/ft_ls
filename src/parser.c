@@ -22,11 +22,7 @@ void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     int i = 0;
 
     while (i < size) {
-        new_entries[i] = (t_entry *)malloc(sizeof(t_entry));
-        new_entries[i]->name = ft_strdup(data->entries[i]->name);
-        new_entries[i]->stat = data->entries[i]->stat;
-        free(data->entries[i]->name);;
-
+        new_entries[i] = data->entries[i];
         i++;
     }
 }
@@ -46,10 +42,11 @@ size_t    store_entries(const char *directory, t_entry_data *data) {
 
     if (dir) {
         while ((entry = readdir(dir)) != NULL) {
-            char *full_path = ft_strjoin(directory, "/");
-            full_path = ft_strjoin(full_path, entry->d_name);
-            // printf("name: %s\n", full_path);
-            if (stat(full_path, &statbuf) == -1) {
+            char *temp_path = ft_strjoin(directory, "/");
+            char *full_path = ft_strjoin(temp_path, entry->d_name);
+            free(temp_path);
+
+            if (lstat(full_path, &statbuf) == -1) {
                 free_d_ptr(data->entries, size);
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to get stat");
@@ -64,7 +61,7 @@ size_t    store_entries(const char *directory, t_entry_data *data) {
                     handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry ** : ");
                 }
                 copy_entries(new_entries, data, size);
-                free_d_ptr(data->entries, size);
+                free(data->entries);
                 data->entries = new_entries;
             }
             data->entries[size] = (t_entry *)malloc(sizeof(t_entry));
@@ -72,9 +69,10 @@ size_t    store_entries(const char *directory, t_entry_data *data) {
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry *: ");
             }
-            data->entries[size]->name = ft_strdup(entry->d_name);
+            data->entries[size]->name = strdup(entry->d_name);
             data->entries[size]->type = entry->d_type;
-            if (!data->entries[size]->name) {
+            data->entries[size]->full_path = strdup(full_path);
+            if (!data->entries[size]->name || !data->entries[size]->full_path) {
                 free_d_ptr(data->entries, size);
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for char *: ");

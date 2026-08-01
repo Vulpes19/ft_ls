@@ -1,5 +1,6 @@
 #pragma once
 
+#define _DARWIN_C_SOURCE
 #include <sys/stat.h>
 #include <grp.h>
 #include <sys/types.h>
@@ -7,6 +8,7 @@
 #include "../Libft/libft.h"
 #include <stdbool.h>
 #include <time.h>
+#include <limits.h>
 
 void    free_d_ptr(void *p, int len);
 void    handle_error(int line_number, const char *file_name, 
@@ -23,6 +25,7 @@ typedef struct {
 
 typedef struct {
     char *name;
+    char *full_path;
     struct stat     stat;
     unsigned int type;
 
