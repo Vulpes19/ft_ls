@@ -13,7 +13,6 @@ int main(int ac, char **av)
     };
 
     while (i < ac && av[i][0] == '-') {
-        ft_printf("%s\n", av[i]);
         parse_flags(&flags, av[i]);
         i++;
     }

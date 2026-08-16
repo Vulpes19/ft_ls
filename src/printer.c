@@ -73,7 +73,7 @@ void    get_date(time_t mtime, char *month, char *day, char *time, time_t curren
 
 }
 
-void    print_l_flag(t_entry *entry, time_t current_time) {
+void    print_l_flag(t_entry *entry, time_t current_time, int max_size_width) {
     char permissions[11];
     char month[4];
     char day[3];
@@ -99,21 +99,23 @@ void    print_l_flag(t_entry *entry, time_t current_time) {
         filename = ft_strjoin(temp, buf);
         free(temp);
     }
-    printf("%s %d %s %s %d %s %s %s %s\n", permissions, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, entry->stat.st_size, month, day, time , filename); 
+    printf("%s  %d %s  %s %*lld %s %s %s %s\n", permissions, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, max_size_width, entry->stat.st_size, month, day, time , filename); 
 }
 
 void    print_output(t_flags *flags, char *directory, t_entry_data *data) {
     if (flags->dir_nbr > 1) {
-        ft_printf("%s:\n", directory);
+        printf("%s:\n", directory);
     }
+    if (flags->l_flag)
+        printf("total %zu\n", data->total);
     time_t current_time = time(NULL);
     for (size_t i = 0; i < data->size && data->entries[i]; i++) {
         if (!flags->a_flag && data->entries[i]->name[0] == '.')
             continue;
         if (flags->l_flag)
-            print_l_flag(data->entries[i], current_time);
+            print_l_flag(data->entries[i], current_time, data->max_size_width);
         else
-            ft_printf("%s  ", data->entries[i]->name);
+            printf("%s  ", data->entries[i]->name);
     }
-    ft_printf("\n");
+    printf("\n");
 }

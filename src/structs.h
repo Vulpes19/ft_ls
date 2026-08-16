@@ -33,5 +33,7 @@ typedef struct {
 
 typedef struct {
     t_entry **entries;
+    size_t total;
+    int max_size_width;
     size_t size;
 } t_entry_data;

@@ -17,6 +17,18 @@
 #define OTH_WRITE 0002
 #define OTH_EXECUTE 0001
 
+int  count_digits(int st_size) {
+    if (st_size == 0)
+        return 1;
+
+    int count = 0;
+    while (st_size != 0)
+    {
+        st_size = st_size / 10;
+        ++count;
+    }
+    return count;
+}
 
 void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     int i = 0;
@@ -27,7 +39,7 @@ void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     }
 }
 
-size_t    store_entries(const char *directory, t_entry_data *data) {
+size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flags, int *max_size_width) {
     size_t size = 0;
     size_t capacity = 5;
     DIR *dir = opendir(directory);
@@ -51,6 +63,12 @@ size_t    store_entries(const char *directory, t_entry_data *data) {
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to get stat");
                 continue;
+            }
+            if (flags->l_flag) {
+                data->total += (!flags->a_flag && entry->d_name[0] == '.' ? 0 : statbuf.st_blocks);
+                int len = count_digits(statbuf.st_size);
+                if (len > *max_size_width)
+                    *max_size_width = len;
             }
             if (size == capacity) {
                 capacity *= 2;
@@ -84,9 +102,6 @@ size_t    store_entries(const char *directory, t_entry_data *data) {
         data->size = size;
     }
 
-
-    // free_d_ptr(data->entries, size);
-    // free(data);
     return data->size;
 }
 

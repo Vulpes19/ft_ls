@@ -8,23 +8,26 @@ enum sort_order {
 };
 
 bool    compare(t_entry *left, t_entry *right, enum sort_order order) {
+    int res = strcoll(left->name, right->name);
+    if (res == 0)
+        res = strcmp(left->name, right->name);
     switch (order)
     {
         case S_REVERSE:
-            return (ft_strcmp(left->name, right->name) > 0);
+            return (res > 0);
 
         case S_DATE:
             if (left->stat.st_mtime != right->stat.st_mtime)
                 return (left->stat.st_mtime > right->stat.st_mtime);
-            return (ft_strcmp(left->name, right->name) < 0);
+            return (res < 0);
 
         case S_DATE_REVERSE:
             if (left->stat.st_mtime != right->stat.st_mtime)
                 return (left->stat.st_mtime < right->stat.st_mtime);
-            return (ft_strcmp(left->name, right->name) > 0);
+            return (res > 0);
 
         default:
-            return (ft_strcmp(left->name, right->name) < 0);
+            return (res < 0);
     }
 } 
 
