@@ -85,15 +85,12 @@ void    sort(t_entry_data *data, int left, int right, enum sort_order order) {
 
 void    sort_entries(t_flags *flags, t_entry_data *data) {
     if (flags->r_flag && flags->t_flag) {
-        printf("sort by date reverse\n");
         sort(data, 0, data->size - 1, S_DATE_REVERSE);
     }
     else if (flags->r_flag) {
-        printf("sort by reverse\n");
         sort(data, 0, data->size - 1, S_REVERSE);
     }
     else if (flags->t_flag) {
-        printf("sort by date\n");
         sort(data, 0, data->size - 1, S_DATE);
     }
     else

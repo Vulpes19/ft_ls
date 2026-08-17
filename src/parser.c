@@ -39,7 +39,7 @@ void copy_entries(t_entry **new_entries, t_entry_data *data, int size) {
     }
 }
 
-size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flags, int *max_size_width) {
+size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flags, int *max_size_width, int *max_nlink_width) {
     size_t size = 0;
     size_t capacity = 5;
     DIR *dir = opendir(directory);
@@ -67,8 +67,11 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
             if (flags->l_flag) {
                 data->total += (!flags->a_flag && entry->d_name[0] == '.' ? 0 : statbuf.st_blocks);
                 int len = count_digits(statbuf.st_size);
+                int len_nlink = count_digits(statbuf.st_nlink);
                 if (len > *max_size_width)
                     *max_size_width = len;
+                if (len_nlink > *max_nlink_width)
+                    *max_nlink_width = len_nlink;
             }
             if (size == capacity) {
                 capacity *= 2;

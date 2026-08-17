@@ -18,14 +18,16 @@ void    ls_dir(t_flags *flags, char *path) {
     t_entry_data *data = NULL;
     size_t size = 0;
     int max_size_width = 0;
+    int max_nlink_width = 0;
 
     data = (t_entry_data *)malloc(sizeof(t_entry_data));
     if (!data) {
         handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry_data * : ");
     }
     data->total = 0;
-    size = store_entries(path, data, flags, &max_size_width);
+    size = store_entries(path, data, flags, &max_size_width, &max_nlink_width);
     data->max_size_width = max_size_width;
+    data->max_nlink_width = max_nlink_width;
     sort_entries(flags, data);
     print_output(flags, path, data);
 
