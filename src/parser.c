@@ -98,10 +98,11 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
             }
             data->entries[size] = (t_entry *)malloc(sizeof(t_entry));
             if (!data->entries[size]) {
+                free_d_ptr(data->entries, size);
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry *: ");
             }
-            
+
             data->entries[size]->name = strdup(entry->d_name);
             data->entries[size]->type = entry->d_type;
             data->entries[size]->full_path = strdup(full_path);
