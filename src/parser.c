@@ -54,16 +54,25 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
 
     if (dir) {
         while ((entry = readdir(dir)) != NULL) {
+
+            // modify path with slash so it can be opened with lstat()
             char *temp_path = ft_strjoin(directory, "/");
             char *full_path = ft_strjoin(temp_path, entry->d_name);
             free(temp_path);
 
+            // stat() returns info about the file passed to it
+            // lstat() is the same but it also returns info about the symlink
             if (lstat(full_path, &statbuf) == -1) {
                 free_d_ptr(data->entries, size);
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to get stat");
                 continue;
             }
+
+            // -l flag needs to count:
+            // total number
+            // maximum width of the size column (so the output looks clean)
+            // maximum width of the nlink width (so the output looks clean)
             if (flags->l_flag) {
                 data->total += (!flags->a_flag && entry->d_name[0] == '.' ? 0 : statbuf.st_blocks);
                 int len = count_digits(statbuf.st_size);
@@ -73,6 +82,8 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
                 if (len_nlink > *max_nlink_width)
                     *max_nlink_width = len_nlink;
             }
+
+            // if size reaches capacity, reallocation happens
             if (size == capacity) {
                 capacity *= 2;
                 t_entry **new_entries = (t_entry **)ft_calloc(capacity, sizeof(t_entry *));
@@ -90,6 +101,7 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry *: ");
             }
+            
             data->entries[size]->name = strdup(entry->d_name);
             data->entries[size]->type = entry->d_type;
             data->entries[size]->full_path = strdup(full_path);

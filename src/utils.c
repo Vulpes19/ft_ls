@@ -18,15 +18,7 @@ void    free_d_ptr(void *p, int len) {
 void    handle_error(int line_number, const char *file_name, 
     const char *function, const char *error_msg) 
 {
-    char *full_message = ft_strjoin(error_msg, "line: ");
-    char *c = ft_itoa(line_number);
-    full_message = ft_strjoin(full_message, c);
-    full_message = ft_strjoin(full_message, ", file: ");
-    full_message = ft_strjoin(full_message, file_name);
-    full_message = ft_strjoin(full_message, ", function: ");
-    full_message = ft_strjoin(full_message, function);
-    full_message = ft_strjoin(full_message, ". ");
-    perror(ft_strjoin(full_message, strerror(errno)));
-    free(full_message);
+    fprintf(stderr, "%s (line: %d, file: %s, function: %s): %s\n",
+            error_msg, line_number, file_name, function, strerror(errno));
     exit(EXIT_FAILURE);
 }
