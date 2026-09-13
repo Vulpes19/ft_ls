@@ -62,7 +62,6 @@ void    get_date(time_t mtime, char *month, char *day, char *time, time_t curren
     char *full_date = ctime(&mtime);
     const long six_months = 15552000;
     time_t file_age = current_time - mtime;
-    size_t date_len = 25;
 
     ft_strlcpy(month, &full_date[4], 4);
     ft_strlcpy(day, &full_date[8], 3);
