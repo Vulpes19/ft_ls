@@ -8,9 +8,9 @@ enum sort_order {
 };
 
 bool    compare(t_entry *left, t_entry *right, enum sort_order order) {
-    int res = strcoll(left->name, right->name);
+    int res = strcoll(left->name, right->name); // case and accents are sorted according to standard dictionary rules
     if (res == 0)
-        res = strcmp(left->name, right->name);
+        res = strcmp(left->name, right->name); // ASCII order
     switch (order)
     {
         case S_REVERSE:

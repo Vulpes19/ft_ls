@@ -103,15 +103,17 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for t_entry *: ");
             }
 
-            data->entries[size]->name = strdup(entry->d_name);
-            data->entries[size]->type = entry->d_type;
-            data->entries[size]->full_path = strdup(full_path);
+            // Info we get for each file/dir/entry
+            
+            data->entries[size]->name = strdup(entry->d_name); // name of entry
+            data->entries[size]->type = entry->d_type;         // type of entry
+            data->entries[size]->full_path = strdup(full_path);// full path of entry
             if (!data->entries[size]->name || !data->entries[size]->full_path) {
                 free_d_ptr(data->entries, size);
                 free(data);
                 handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for char *: ");
             }
-            data->entries[size]->stat = statbuf;
+            data->entries[size]->stat = statbuf; // stats of entry
             size++;
         }
         closedir(dir);
