@@ -62,7 +62,6 @@ void    get_date(time_t mtime, char *month, char *day, char *time, time_t curren
     char *full_date = ctime(&mtime);
     const long six_months = 15552000;
     time_t file_age = current_time - mtime;
-    size_t date_len = 25;
 
     ft_strlcpy(month, &full_date[4], 4);
     ft_strlcpy(day, &full_date[8], 3);
@@ -99,13 +98,18 @@ void    print_l_flag(t_entry *entry, time_t current_time, int max_size_width, in
         filename = ft_strjoin(temp, buf);
         free(temp);
     }
-    printf("%s  %*d %s  %s %*lld %s %s %s %s\n", permissions, max_nlink_width, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, max_size_width, entry->stat.st_size, month, day, time , filename); 
+    printf("%s  %*d %s  %s %*lld %s %s %s %s\n", permissions, max_nlink_width, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, max_size_width, entry->stat.st_size, month, day, time , filename);
+
+    if (S_ISLNK(entry->stat.st_mode))
+        free(filename);
 }
 
 void    print_output(t_flags *flags, char *directory, t_entry_data *data) {
     if (flags->dir_nbr > 1) {
         printf("%s:\n", directory);
     }
+
+    // total amount of physical disk space occupied by listed files measured in blocks
     if (flags->l_flag)
         printf("total %zu\n", data->total);
     time_t current_time = time(NULL);

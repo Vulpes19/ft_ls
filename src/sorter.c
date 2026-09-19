@@ -8,9 +8,9 @@ enum sort_order {
 };
 
 bool    compare(t_entry *left, t_entry *right, enum sort_order order) {
-    int res = strcoll(left->name, right->name);
+    int res = strcoll(left->name, right->name); // case and accents are sorted according to standard dictionary rules
     if (res == 0)
-        res = strcmp(left->name, right->name);
+        res = strcmp(left->name, right->name); // ASCII order
     switch (order)
     {
         case S_REVERSE:
@@ -36,7 +36,14 @@ void    merge(t_entry_data *data, int left, int middle, int right, enum sort_ord
     int n1 = middle - left + 1;
     int n2 = right - middle;
 
-    t_entry *left_arr[n1], *right_arr[n2];
+    t_entry **left_arr = malloc(sizeof(t_entry *) * n1);
+    t_entry **right_arr = malloc(sizeof(t_entry *) * n2);
+
+    if (!left_arr || !right_arr) {
+        free(left_arr);
+        free(right_arr);
+        handle_error(__LINE__, __FILE__, __FUNCTION__, "Failed to allocate memory for sorting: ");
+    }
 
     for (i = 0; i < n1; i++) {
         left_arr[i] = data->entries[left + i];
@@ -70,6 +77,8 @@ void    merge(t_entry_data *data, int left, int middle, int right, enum sort_ord
         j++;
         k++;
     }
+    free(left_arr);
+    free(right_arr);
 }
 
 void    sort(t_entry_data *data, int left, int right, enum sort_order order) {
