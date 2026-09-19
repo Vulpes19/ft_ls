@@ -1,4 +1,5 @@
 #include "ls.h"
+#include "utils.h"
 
 void    ls_subdir(t_flags *flags, t_entry **entries, size_t size) {
 

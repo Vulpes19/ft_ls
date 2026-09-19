@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <string.h>
 #include "printer.h"
+#include "utils.h"
 
 #define USR_READ 0400
 #define USR_WRITE 0200
@@ -108,6 +109,7 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
             data->entries[size]->name = strdup(entry->d_name); // name of entry
             data->entries[size]->type = entry->d_type;         // type of entry
             data->entries[size]->full_path = strdup(full_path);// full path of entry
+            free(full_path);
             if (!data->entries[size]->name || !data->entries[size]->full_path) {
                 free_d_ptr(data->entries, size);
                 free(data);

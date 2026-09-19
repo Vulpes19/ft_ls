@@ -98,7 +98,7 @@ void    print_l_flag(t_entry *entry, time_t current_time, int max_size_width, in
         filename = ft_strjoin(temp, buf);
         free(temp);
     }
-    printf("%s  %*d %s  %s %*lld %s %s %s %s\n", permissions, max_nlink_width, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, max_size_width, entry->stat.st_size, month, day, time , filename);
+    printf("%s  %*lu %s  %s %*ld %s %s %s %s\n", permissions, max_nlink_width, entry->stat.st_nlink, pwuid->pw_name, gr->gr_name, max_size_width, entry->stat.st_size, month, day, time , filename);
 
     if (S_ISLNK(entry->stat.st_mode))
         free(filename);

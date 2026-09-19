@@ -2,17 +2,28 @@
 #include "../Libft/libft.h"
 #include <errno.h>
 #include <string.h>
+#include "structs.h"
 #include <stdio.h>
 
-void    free_d_ptr(void *p, int len) {
+void    free_d_ptr(t_entry **entries, int len) {
     int i = 0;
-    void **d_ptr = (void **)p;
     
+    if (!entries)
+        return;
+
     while (i < len) {
-        free(d_ptr[i]);
+        if (entries[i]) {
+            // 1. Free the dynamically allocated strings inside the struct
+            free(entries[i]->name);
+            free(entries[i]->full_path);
+            
+            // 2. Free the struct itself
+            free(entries[i]);
+        }
         i++;
     }
-    free(d_ptr);
+    // 3. Free the array of pointers
+    free(entries);
 }
 
 void    handle_error(int line_number, const char *file_name, 

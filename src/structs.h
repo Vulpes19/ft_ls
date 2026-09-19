@@ -10,11 +10,10 @@
 #include <time.h>
 #include <limits.h>
 
-void    free_d_ptr(void *p, int len);
 void    handle_error(int line_number, const char *file_name, 
     const char *function, const char *error_msg);
-
-typedef struct {
+    
+    typedef struct {
     bool l_flag;
     bool R_flag;
     bool a_flag;
@@ -28,7 +27,7 @@ typedef struct {
     char *full_path;
     struct stat     stat;
     unsigned int type;
-
+    
 } t_entry;
 
 typedef struct {
