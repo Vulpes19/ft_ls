@@ -121,6 +121,11 @@ size_t    store_entries(const char *directory, t_entry_data *data, t_flags *flag
         closedir(dir);
         data->size = size;
     }
+    else {
+        ft_putstr_fd("ft_ls: ", 2);
+        perror(directory);
+        exit(1);
+    }
 
     return data->size;
 }
@@ -148,8 +153,9 @@ void parse_flags(t_flags *flags, char *argument) {
                 break;
             case 't':
                 flags->t_flag = true;
-                break;
-            default:
+                ft_putstr_fd("ft_ls: illegal option -- ", 2);
+                ft_putchar_fd(flag, 2);
+                ft_putstr_fd("\nusage: ft_ls [-1aRlrt] [file ...]\n", 2);
                 break;
         }
         
